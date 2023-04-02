@@ -6,6 +6,8 @@ Code tool paths to plot a sketch on your 3d printer using a marker/pen.
 
 Examples can be found in [testing](../testing) directory.
 
+Although this directory includes precompiled gcode files, recompiling them is advised as they might not be up to date.
+
 ## How to use:
 ##### Requirements:
 - need python 3.10 installed and on path

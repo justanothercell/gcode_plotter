@@ -3,6 +3,7 @@ use processing::Screen;
 use processing::shapes::line::Line;
 use std::path::Path;
 use std::sync::atomic::{AtomicBool, Ordering};
+use processing::shapes::point::Point;
 use crate::executor::execute_script;
 
 static UPDATE_REQUIRED: AtomicBool = AtomicBool::new(true);
@@ -32,9 +33,14 @@ pub(crate) fn run_repl(file: &str) {
                     screen.stroke(&[instr.3.0 as f32 / 255.0], &[instr.3.1 as f32 / 255.0], &[instr.3.2 as f32 / 255.0],
                                   &[if instr.2 { 1.0 } else { 0.1 }]);
 
-                    let l1 = Line::new(&screen, &[(x / (w / 2.0) - 1.0) as f64], &[(y / (h / 2.0) - 1.0) as f64], &[0.0],
-                                       &[(instr.0 / (w / 2.0) - 1.0) as f64], &[(instr.1 / (h / 2.0) - 1.0) as f64], &[0.0]).unwrap();
-                    screen.draw(&l1).unwrap();
+                    if x != instr.0 || y != instr.1 {
+                        let l1 = Line::new(&screen, &[(x / (w / 2.0) - 1.0) as f64], &[(y / (h / 2.0) - 1.0) as f64], &[0.0],
+                                           &[(instr.0 / (w / 2.0) - 1.0) as f64], &[(instr.1 / (h / 2.0) - 1.0) as f64], &[0.0]).unwrap();
+                        screen.draw(&l1).unwrap();
+                    } else {
+                        let p1 = Point::new(&mut screen, &[(x / (w / 2.0) - 1.0) as f64], &[(y / (h / 2.0) - 1.0) as f64], &[0.0]).unwrap();
+                        screen.draw(&p1).unwrap();
+                    }
 
                     x = instr.0;
                     y = instr.1;

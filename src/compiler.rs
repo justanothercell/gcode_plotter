@@ -12,8 +12,9 @@ pub(crate) fn run_compiler(file: &str, outfile: &str) {
             "G28 ; homing all axis".to_string(),
             format!("G0 Z{h_up} ; go to pen_up state"),
             "M25 P\"prepare pen [ok]\" S2".to_string(),
-            format!("G0 X{ox} Y{oy}; go to min positions"),
-            format!("G0 Z{h_up} ; go to pen_up state again"),
+            // uses the accurate movement in hopes that it'll help
+            format!("G1 X{ox} Y{oy}; go to min positions"),
+            format!("G1 Z{h_up} ; go to pen_up state again"),
             "".to_string()
         ];
 
@@ -34,8 +35,9 @@ pub(crate) fn run_compiler(file: &str, outfile: &str) {
         }
 
         code.push("".to_string());
-        code.push(format!("G0 Z{h_up} ; go to pen_up state again"));
-        code.push(format!("G0 X{ox} Y{oy}; go to min positions"));
+        // uses the accurate movement in hopes that it'll help
+        code.push(format!("G1 Z{h_up} ; go to pen_up state again"));
+        code.push(format!("G1 X{ox} Y{oy} ; go to min positions"));
 
         File::create(outfile).expect("could not open outfile").write_all(code.join("\n").as_bytes()).unwrap();
     } else {

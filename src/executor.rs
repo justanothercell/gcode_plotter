@@ -6,15 +6,23 @@ use pyo3::types::PyDict;
 #[allow(clippy::type_complexity)]
 pub(crate) fn execute_script(file: &str) -> Option<((f32, f32), (f32, f32), (f32, f32), Vec<(f32, f32, bool, (i32, i32, i32))>)> {
     Python::with_gil(|py| {
-        PyModule::from_code(py, include_str!("plotter.py"), "plotter.py", "plotter").unwrap();
+        let paths = std::fs::read_dir("pylib").unwrap();
+
+        for path in paths.flatten() {
+            let filename = path.file_name().to_string_lossy().to_string();
+            if filename.ends_with(".py") {
+                PyModule::from_code(py, &read_to_string(&format!("pylib/{}", filename)).unwrap(), &filename, filename.split_at(filename.len()-3).0).unwrap();
+            }
+        }
+
+        PyModule::from_code(py, include_str!("../pylib/plot_text.py"), "plot_text.py", "plot_text").unwrap();
         let globals = PyDict::new(py);
         let locals = PyDict::new(py);
         if let Err(e) = py.run(&read_to_string(file).expect("could not open file"), Some(globals), Some(locals)) {
-        eprintln!("error executing print instructions:");
-        e.print(py);
+            eprintln!("error executing print instructions:");
+            e.print(py);
         }
-
-        match globals.get_item("plotter") {
+        match locals.get_item("plotter").map(Some).unwrap_or_else(|| globals.get_item("plotter")) {
             None => eprintln!("no global plotter in instructions file"),
             Some(plotter) => {
                 let w: f32 = plotter.getattr("width").unwrap().extract().unwrap();
