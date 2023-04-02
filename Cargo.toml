@@ -1,0 +1,9 @@
+[package]
+name = "gcode_plotter"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+notify-debouncer-mini =  { version = "0.2.1", default-features = false }
+processing = "0.3.2"
+pyo3 = "0.18.2"
