@@ -12,7 +12,7 @@ pub(crate) fn run_compiler(file: &str, outfile: &str) {
             "G28 ; homing all axis".to_string(),
             format!("G0 Z{h_up} ; go to pen_up state"),
             "M25 P\"prepare pen [ok]\" S2".to_string(),
-            // uses the accurate movement in hopes that it'll help
+            // use the accurate movement in hopes that it'll help
             format!("G1 X{ox} Y{oy}; go to min positions"),
             format!("G1 Z{h_up} ; go to pen_up state again"),
             "".to_string()
@@ -35,7 +35,7 @@ pub(crate) fn run_compiler(file: &str, outfile: &str) {
         }
 
         code.push("".to_string());
-        // uses the accurate movement in hopes that it'll help
+        // use the accurate movement in hopes that it'll help
         code.push(format!("G1 Z{h_up} ; go to pen_up state again"));
         code.push(format!("G1 X{ox} Y{oy} ; go to min positions"));
 
